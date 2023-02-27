@@ -118,6 +118,23 @@ public class SqlTracker implements Store, AutoCloseable {
     }
 
     @Override
+    public List<Subscriber> findSubscriberByCompany(int id) {
+        List<Subscriber> subscribers = new ArrayList<>();
+        try (PreparedStatement statement =
+                cn.prepareStatement("select * from subscribers where companyId = ?")) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    subscribers.add(createSubscriber(resultSet));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subscribers;
+    }
+
+    @Override
     public Subscriber addSubscriber(Subscriber subscriber) {
         try (PreparedStatement statement =
                 cn.prepareStatement(

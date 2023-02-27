@@ -14,6 +14,8 @@ public interface Store {
 
     List<Company> findAllCompanies();
 
+    List<Subscriber> findSubscriberByCompany(int id);
+
     Subscriber addSubscriber(Subscriber subscriber);
 
     boolean updateSubscriber(String subscriberNumber, Subscriber subscriber);

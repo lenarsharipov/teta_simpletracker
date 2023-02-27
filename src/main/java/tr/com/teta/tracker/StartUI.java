@@ -50,6 +50,7 @@ public class StartUI {
                     new AddSubscriberAction(output),
                     new UpdateSubscriberAction(output),
                     new DeleteSubscriberAction(output),
+                    new FindSubscribersByCompany(output),
                     new FindAllSubscribers(output),
                     new FindSubscriberByNameAction(output),
                     new FindBySubscriberNumberAction(output),
