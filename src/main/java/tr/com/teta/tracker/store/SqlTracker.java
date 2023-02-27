@@ -121,7 +121,7 @@ public class SqlTracker implements Store, AutoCloseable {
     public Subscriber addSubscriber(Subscriber subscriber) {
         try (PreparedStatement statement =
                 cn.prepareStatement(
-                        "insert into subscribers(name, surname, subscriberNumber, plateNumber, id) values(?, ?, ?, ?, ?)",
+                        "insert into subscribers(name, surname, subscriberNumber, plateNumber, companyId) values(?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, subscriber.getName());
             statement.setString(2, subscriber.getSurname());
@@ -141,7 +141,7 @@ public class SqlTracker implements Store, AutoCloseable {
     }
 
     @Override
-    public boolean updateSubscriber(int id, Subscriber subscriber) {
+    public boolean updateSubscriber(String subscriberNumber, Subscriber subscriber) {
         boolean result = false;
         try (PreparedStatement statement = cn.prepareStatement(
                         "update subscribers set name = ?, "
@@ -149,12 +149,14 @@ public class SqlTracker implements Store, AutoCloseable {
                                 + "subscriberNumber = ?, "
                                 + "plateNumber = ?, "
                                 + "id = ? "
-                                + "values(?, ?, ?, ?, ?)")) {
+                                + "where subscriberNumber = ?"
+                                + "values(?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, subscriber.getName());
             statement.setString(2, subscriber.getSurname());
-            statement.setString(3, subscriber.getSubscriberNumber());
+            statement.setString(3, subscriberNumber);
             statement.setString(4, subscriber.getPlateNumber());
             statement.setInt(5, subscriber.getCompanyId());
+            statement.setString(6, subscriberNumber);
             result = statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,16 +165,30 @@ public class SqlTracker implements Store, AutoCloseable {
     }
 
     @Override
-    public boolean deleteSubscriber(int id) {
+    public boolean deleteSubscriber(String subscriberNumber) {
         boolean result = false;
         try (PreparedStatement statement = cn.prepareStatement(
-                "delete from subscribers where id = ?")) {
-            statement.setInt(1, id);
+                "delete from subscribers where subscriberNumber = ?")) {
+            statement.setString(1, subscriberNumber);
             result = statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public List<Subscriber> findAllSubscribers() {
+        List<Subscriber> subscribers = new ArrayList<>();
+        try (PreparedStatement statement = cn.prepareStatement("select * from subscribers")) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    subscribers.add(createSubscriber(resultSet));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subscribers;
     }
 
     private Subscriber createSubscriber(ResultSet resultSet) throws SQLException {
@@ -182,7 +198,7 @@ public class SqlTracker implements Store, AutoCloseable {
                 resultSet.getString("surname"),
                 resultSet.getString("subscriberNumber"),
                 resultSet.getString("plateNumber"),
-                resultSet.getInt("CompanyId"));
+                resultSet.getInt("companyId"));
     }
 
     @Override
@@ -190,7 +206,7 @@ public class SqlTracker implements Store, AutoCloseable {
         Subscriber subscriber = null;
         try (PreparedStatement statement =
                      cn.prepareStatement(
-                             "select * from subscribers where name = ?, surname = ?, companyId = ?")) {
+                             "select * from subscribers where name = ? and surname = ?")) {
             statement.setString(1, name);
             statement.setString(2, surname);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -225,8 +241,8 @@ public class SqlTracker implements Store, AutoCloseable {
     public List<Subscriber> findByPlate(String plateNumber) {
         List<Subscriber> subscribers = new ArrayList<>();
         try (PreparedStatement statement =
-                     cn.prepareStatement("select * from subscribers where plateNumber = like %?%")) {
-            statement.setString(1, plateNumber);
+                     cn.prepareStatement("select * from subscribers where plateNumber like ?")) {
+            statement.setString(1, "%" + plateNumber + "%");
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     subscribers.add(createSubscriber(resultSet));
