@@ -1,4 +1,5 @@
 # TETA - SIMPLE TRACKER PROJECT
+Simple console CRUD application with Company, Subscriber models/entities.
 
 Stack: 
 Java17, 
@@ -9,8 +10,6 @@ HL2,
 JUNIT5 / AssertJ, 
 CHECKSTYLE-IDEA plugin (by Jamie Shiell),
 DATABASE NAVIGATOR plugin (by Dan Cioca)
-
-Simple CRUD application with Company, Subscriber models/entities.
 
 CRUD operations:
 - Add company
