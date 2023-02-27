@@ -20,8 +20,6 @@ public interface Store {
 
     boolean deleteSubscriber(int id);
 
-    List<Company> findAllSubscribers();
-
     Subscriber findByName(String name, String surname);
 
     Subscriber findBySubscriberNumber(String subscriberNumber);
