@@ -12,6 +12,12 @@ public class Company {
 
     }
 
+    public Company(String company, String phone, String address) {
+        this.company = company;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public Company(int id) {
         this.id = id;
     }
