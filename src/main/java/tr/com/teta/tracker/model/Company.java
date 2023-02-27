@@ -21,6 +21,13 @@ public class Company {
         this.company = company;
     }
 
+    public Company(int id, String company, String phone, String address) {
+        this.id = id;
+        this.company = company;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public int getId() {
         return id;
     }
