@@ -16,9 +16,11 @@ public interface Store {
 
     Subscriber addSubscriber(Subscriber subscriber);
 
-    boolean updateSubscriber(int id, Subscriber subscriber);
+    boolean updateSubscriber(String subscriberNumber, Subscriber subscriber);
 
-    boolean deleteSubscriber(int id);
+    boolean deleteSubscriber(String subscriberNumber);
+
+    List<Subscriber> findAllSubscribers();
 
     Subscriber findByName(String name, String surname);
 
