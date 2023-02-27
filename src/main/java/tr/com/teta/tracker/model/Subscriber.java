@@ -1,5 +1,7 @@
 package tr.com.teta.tracker.model;
 
+import java.util.Objects;
+
 public class Subscriber {
     private int id;
     private String name;
@@ -10,6 +12,14 @@ public class Subscriber {
 
     public Subscriber() {
 
+    }
+
+    public Subscriber(String name, String surname, String subscriberNumber, String plateNumber, int companyId) {
+        this.name = name;
+        this.surname = surname;
+        this.subscriberNumber = subscriberNumber;
+        this.plateNumber = plateNumber;
+        this.companyId = companyId;
     }
 
     public Subscriber(int id) {
@@ -97,5 +107,29 @@ public class Subscriber {
 
     public void setCompanyId(int companyId) {
         this.companyId = companyId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "id=%s, name=%s, surname=%s, subscriberNumber=%s, plateNumber=%s, companyId=%s",
+                id, name, surname, subscriberNumber, plateNumber, companyId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Subscriber that = (Subscriber) o;
+        return id == that.id && Objects.equals(subscriberNumber, that.subscriberNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, subscriberNumber);
     }
 }
